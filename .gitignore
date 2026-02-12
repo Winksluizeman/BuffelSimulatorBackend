@@ -1,37 +1,49 @@
-HELP.md
-.gradle
-build/
-!gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
+############################
+# Node / npm
+############################
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
+############################
+# Angular build output
+############################
+dist/
+out-tsc/
 
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-out/
-!**/src/main/**/out/
-!**/src/test/**/out/
+############################
+# Angular cache
+############################
+.angular/
+.angular/cache/
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
+############################
+# Environment files (lokale secrets)
+############################
+src/environments/environment.local.ts
 
-### VS Code ###
+############################
+# Testing / coverage
+############################
+coverage/
+
+############################
+# IDE / Editors
+############################
+.idea/
 .vscode/
+
+############################
+# OS files
+############################
+.DS_Store
+Thumbs.db
+
+############################
+# Temporary / misc
+############################
+*.log
+*.tmp
+*.swp
