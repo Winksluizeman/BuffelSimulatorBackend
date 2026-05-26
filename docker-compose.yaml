@@ -6,7 +6,8 @@ services:
       - "4200:4200"
     command: npm start
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
 
   backend:
     build: "C:/School/Semester 4/Opdrachten/Persoonlijke opdracht/BuffelSimulatorBackend"
@@ -16,21 +17,32 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/buffel
       SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_DATASOURCE_PASSWORD: Appel12
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   db:
-    image: postgres:16
-    container_name: buffel-db
+    image: postgres:15
+    container_name: buffeldb
     environment:
       POSTGRES_DB: buffel
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: Appel12
     ports:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d buffel"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
 volumes:
   pgdata:
