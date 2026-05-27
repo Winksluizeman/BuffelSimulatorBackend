@@ -17,14 +17,14 @@ public class UserRepository implements IUserRepository {
 
     @Override
     public Optional<UserModel> findByUsername(String username) {
-        return userJpaRepository.findByName(username)
-                .map(u -> new UserModel(u.getId(), u.getName(), u.getEmail(), u.getPassword(), u.getCreatedAt()));
+        return userJpaRepository.findByUsername(username)
+                .map(u -> new UserModel(u.getId(), u.getUsername(), u.getEmail(), u.getPassword(), u.getCreatedAt()));
     }
 
     @Override
     public void save (UserModel user) {
         UserTable table = new UserTable();
-        table.setName(user.getName());
+        table.setUsername(user.getUsername());
         table.setPassword(user.getPassword());
         table.setEmail(user.getEmail());
         table.setCreatedAt(user.getCreatedAt());

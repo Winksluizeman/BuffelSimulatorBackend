@@ -15,8 +15,8 @@ public class WeightService {
         this.iWeightRepository = iWeightRepository;
     }
 
-    public List<ExerciseModel> getExercises() {
-        return iWeightRepository.findAll();
+    public List<ExerciseModel> getExercisesByUsername(String username) {
+        return iWeightRepository.findAllByUsername(username);
     }
 
     public void saveExercise(ExerciseModel model) {

@@ -13,7 +13,7 @@ public class UserTable {
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private String username;
 
     @Column(nullable = false)
     private String email;
@@ -27,12 +27,12 @@ public class UserTable {
     public UserTable() {}
 
     public Long getId() { return id; }
-    public String getName() { return name; }
+    public String getUsername() { return username; }
     public String getEmail() { return email; }
     public String getPassword() { return password; }
     public LocalDateTime getCreatedAt() { return createdAt; }
 
-    public void setName(String name) { this.name = name; }
+    public void setUsername(String name) { this.username = name; }
     public void setEmail(String email) { this.email = email; }
     public void setPassword(String password) { this.password = password; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }

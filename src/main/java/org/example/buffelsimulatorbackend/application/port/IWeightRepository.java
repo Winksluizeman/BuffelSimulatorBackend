@@ -5,5 +5,5 @@ import java.util.List;
 
 public interface IWeightRepository {
     void save(ExerciseModel model);
-    List<ExerciseModel> findAll();
+    List<ExerciseModel> findAllByUsername(String username);
 }

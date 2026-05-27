@@ -24,8 +24,8 @@ public class WeightRepository implements IWeightRepository {
     }
 
     @Override
-    public List<ExerciseModel> findAll() {
-        return weightJpaRepository.findAll().stream()
+    public List<ExerciseModel> findAllByUsername(String username) {
+        return weightJpaRepository.findAllByUsername(username).stream()
                 .map(WeightConverter::toModel)
                 .toList();
     }

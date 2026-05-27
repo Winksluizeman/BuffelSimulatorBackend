@@ -21,11 +21,11 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void register(String name, String email, String password)
+    public void register(String username, String email, String password)
     {
         UserModel user = new UserModel(
                 null,
-                name,
+                username,
                 email,
                 passwordEncoder.encode(password),
                 LocalDateTime.now()
