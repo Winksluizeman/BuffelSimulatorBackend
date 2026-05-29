@@ -1,16 +1,17 @@
 import org.gradle.kotlin.dsl.runtimeOnly
 
+group = "org.example"
+version = "0.0.1-SNAPSHOT"
+description = "BuffelSimulatorBackend"
+
 plugins {
     java
     id("org.springframework.boot") version "4.0.2"
     id("io.spring.dependency-management") version "1.1.7"
     id("com.netflix.dgs.codegen") version "8.3.0"
     id("org.graalvm.buildtools.native") version "0.11.4"
+    id("jacoco")
 }
-
-group = "org.example"
-version = "0.0.1-SNAPSHOT"
-description = "BuffelSimulatorBackend"
 
 java {
     toolchain {
@@ -31,11 +32,9 @@ repositories {
 extra["springModulithVersion"] = "2.0.2"
 
 dependencies {
-
-    implementation ("io.jsonwebtoken:jjwt-api:0.11.5")
-    runtimeOnly ("io.jsonwebtoken:jjwt-impl:0.11.5")
-    runtimeOnly ("io.jsonwebtoken:jjwt-jackson:0.11.5")
-
+    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
 
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-flyway")
@@ -49,13 +48,11 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     annotationProcessor("org.projectlombok:lombok")
-    testImplementation("org.springframework.boot:spring-boot-starter-flyway-test")
-    testImplementation("org.springframework.boot:spring-boot-starter-security-oauth2-resource-server-test")
-    testImplementation("org.springframework.boot:spring-boot-starter-security-test")
-    testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.security:spring-security-test")
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
-    testImplementation("org.testcontainers:testcontainers-junit-jupiter")
-    testImplementation("org.testcontainers:testcontainers-postgresql")
+    testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("org.testcontainers:postgresql")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
@@ -73,4 +70,17 @@ tasks.generateJava {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.test {
+    finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+    reports {
+        html.required.set(true)
+        xml.required.set(false)
+        csv.required.set(false)
+    }
 }
