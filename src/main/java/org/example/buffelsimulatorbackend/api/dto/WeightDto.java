@@ -1,9 +1,26 @@
 package org.example.buffelsimulatorbackend.api.dto;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import org.jetbrains.annotations.NotNull;
+
+@SuppressWarnings({"LombokGetterMayBeUsed", "LombokSetterMayBeUsed"})
 public class WeightDto {
+
+    @NotBlank
     private String name;
+
+    @NotBlank
     private String category;
+
+    @SuppressWarnings("NullableProblems")
+    @NotNull
+    @Min(0)
     private int weight;
+
+    @SuppressWarnings("NullableProblems")
+    @NotNull
+    @Min(1)
     private int reps;
 
     public String getName() { return name; }

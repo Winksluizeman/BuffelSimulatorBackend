@@ -1,9 +1,11 @@
 package org.example.buffelsimulatorbackend.api.controller;
 
+import jakarta.validation.Valid;
 import org.example.buffelsimulatorbackend.api.converter.WeightConverter;
 import org.example.buffelsimulatorbackend.api.dto.WeightDto;
 import org.example.buffelsimulatorbackend.application.service.WeightService;
 import org.example.buffelsimulatorbackend.domain.ExerciseModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -21,11 +23,11 @@ public class WeightController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> saveExercise(@RequestBody WeightDto weightDto, Authentication authentication) {
+    public ResponseEntity<Void> saveExercise(@Valid @RequestBody WeightDto weightDto, Authentication authentication) {
         ExerciseModel model = WeightConverter.toModel(weightDto);
         model.setUsername(authentication.getName());
         weightService.saveExercise(model);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping
