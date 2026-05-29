@@ -20,6 +20,9 @@ public class WeightService {
     }
 
     public void saveExercise(ExerciseModel model) {
+        if(model.getWeight() <0 ) {
+            throw new IllegalArgumentException("Gewicht kan niet kleiner dan 0kg");
+        }
         iWeightRepository.save(model);
         System.out.println("Opgeslagen: " + model.getName() + " - " + model.getCategory()
                 + " - " + model.getWeight() + "kg - " + model.getReps() + " reps");
