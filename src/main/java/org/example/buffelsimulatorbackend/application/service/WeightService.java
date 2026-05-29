@@ -23,6 +23,9 @@ public class WeightService {
         if(model.getWeight() <0 ) {
             throw new IllegalArgumentException("Gewicht kan niet kleiner dan 0kg");
         }
+        if (model.getCategory() == null || model.getCategory().isBlank()) {
+            throw new IllegalArgumentException("Spiergroep veld is verplicht");
+        }
         iWeightRepository.save(model);
         System.out.println("Opgeslagen: " + model.getName() + " - " + model.getCategory()
                 + " - " + model.getWeight() + "kg - " + model.getReps() + " reps");

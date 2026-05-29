@@ -102,4 +102,14 @@ class WeightServiceTest {
 
         verify(weightRepository, never()).save(any());
     }
+
+    @Test
+    void saveExercise_withMissingCategory_shouldThrowException() {
+        ExerciseModel model = new ExerciseModel(1, "Alice", "Bench Press", null, 60, 8);
+
+        assertThatThrownBy(() -> weightService.saveExercise(model))
+                .isInstanceOf(IllegalArgumentException.class);
+
+        verify(weightRepository, never()).save(any());
+    }
 }
