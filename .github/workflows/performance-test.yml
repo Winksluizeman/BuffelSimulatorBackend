@@ -1,0 +1,78 @@
+name: Performance Tests
+
+on:
+  push:
+    branches: [ main ]
+  schedule:
+    - cron: '0 2 * * *'  # elke nacht om 02:00
+
+jobs:
+  performance-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Start Docker Compose stack
+        run: |
+          docker compose up -d --build
+          echo "Wachten tot Spring Boot klaar is..."
+          timeout 120 bash -c 'until curl -sf http://localhost:8080/actuator/health; do sleep 3; done'
+
+      - name: Registreer testgebruiker
+        run: |
+          curl -s -X POST http://localhost:8080/auth/register \
+            -H "Content-Type: application/json" \
+            -d '{"username":"testuser","email":"test@example.com","password":"testpassword"}'
+
+      - name: Haal JWT token op
+        run: |
+          chmod +x k6/generate-token.sh
+          bash k6/generate-token.sh
+
+      - name: Installeer k6
+        run: |
+          sudo gpg -k
+          sudo gpg --no-default-keyring \
+            --keyring /usr/share/keyrings/k6-archive-keyring.gpg \
+            --keyserver hkp://keyserver.ubuntu.com:80 \
+            --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] \
+            https://dl.k6.io/deb stable main" \
+            | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update
+          sudo apt-get install k6 -y
+
+      - name: Voer k6 load test uit
+        run: |
+          k6 run \
+            --env BASE_URL=http://localhost:8080 \
+            --env JWT_TOKEN=${{ env.JWT_TOKEN }} \
+            --out json=k6/results.json \
+            k6/load-test.js
+
+      - name: Genereer HTML rapport
+        if: always()
+        run: |
+          npm install -g k6-reporter || true
+          node -e "
+            const { generateSummary } = require('k6-reporter');
+            const fs = require('fs');
+            const data = JSON.parse(fs.readFileSync('k6/results.json', 'utf8'));
+            fs.writeFileSync('k6/report.html', generateSummary(data));
+          " || echo "Reporter niet beschikbaar, raw JSON bewaard"
+
+      - name: Upload rapport als artefact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: k6-performance-report
+          path: |
+            k6/report.html
+            k6/results.json
+          retention-days: 30
+
+      - name: Stop Docker Compose stack
+        if: always()
+        run: docker compose down
