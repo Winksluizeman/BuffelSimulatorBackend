@@ -44,5 +44,38 @@ services:
       timeout: 5s
       retries: 5
 
+  sonarqube:
+    image: sonarqube:community
+    container_name: sonarqube
+    depends_on:
+      - sonar-db
+    ports:
+      - "9000:9000"
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://sonar-db:5432/sonarqube
+      SONAR_JDBC_USERNAME: sonar
+      SONAR_JDBC_PASSWORD: sonar
+    volumes:
+      - sonar_data:/opt/sonarqube/data
+      - sonar_logs:/opt/sonarqube/logs
+    networks:
+      - app-network
+
+  sonar-db:
+    image: postgres:15
+    container_name: sonar-db
+    environment:
+      POSTGRES_DB: sonarqube
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: sonar
+    volumes:
+      - sonar_db_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
 volumes:
+  sonar_date:
+  sonar_logs:
+  sonar_db_data:
+
   pgdata:
