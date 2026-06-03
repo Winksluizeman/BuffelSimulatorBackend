@@ -30,4 +30,9 @@ public class UserRepository implements IUserRepository {
         table.setCreatedAt(user.getCreatedAt());
         userJpaRepository.save(table);
     }
+
+    @Override
+    public void flush() {
+        userJpaRepository.flush();
+    }
 }

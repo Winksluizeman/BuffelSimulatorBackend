@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.Import;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -100,6 +101,6 @@ class UserRepositoryTest {
         assertThatThrownBy(() -> {
             userRepository.save(user2);
             userJpaRepository.flush();
-        }).isInstanceOf(Exception.class);
+        }).isInstanceOf(DataIntegrityViolationException.class);
     }
 }
