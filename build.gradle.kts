@@ -20,9 +20,9 @@ java {
 
 sonar {
     properties {
-        property("sonar.projectKey", "my-backend")
-        property("sonar.projectName", "Backend Spring Boot")
-        property("sonar.host.url", System.getenv("SONAR_HOST_URL") ?: "http://localhost:9000")
+        property("sonar.projectKey", "Winksluizeman_BuffelSimulatorBackend")
+        property("sonar.projectName", "BuffelSimulatorBackend")
+        property("sonar.host.url", System.getenv("SONAR_HOST_URL") ?: "https://sonarcloud.io")
         property("sonar.token", System.getenv("SONAR_TOKEN") ?: "")
         property("sonar.sources", "src/main/java")
         property("sonar.tests", "src/test/java")
