@@ -78,7 +78,7 @@ jobs:
         with:
           args: >
             -Dsonar.projectKey=Winksluizeman_BuffelSimulatorBackend
-            -Dsonar.organization=winksluizeman
+            -Dsonar.organization=Winksluizeman
             -Dsonar.java.binaries=build/classes/java/main
             -Dsonar.sources=src/main/java
             -Dsonar.tests=src/test/java
