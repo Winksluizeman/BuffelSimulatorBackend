@@ -18,23 +18,6 @@ java {
     }
 }
 
-sonar {
-    properties {
-        property("sonar.projectKey", "Winksluizeman_BuffelSimulatorBackend")
-        property("sonar.organization", "Winksluizeman")
-        property("sonar.projectName", "BuffelSimulatorBackend")
-        property("sonar.host.url", System.getenv("SONAR_HOST_URL") ?: "https://sonarcloud.io")
-        property("sonar.token", System.getenv("SONAR_TOKEN") ?: "")
-        property("sonar.sources", "src/main/java")
-        property("sonar.tests", "src/test/java")
-        property("sonar.java.binaries", "build/classes/java/main")
-        property("sonar.exclusions", "**/codegen/**,**/generated/**")
-        property(
-            "sonar.coverage.jacoco.xmlReportPaths",
-            layout.buildDirectory.file("reports/jacoco/test/jacocoTestReport.xml").get().asFile.path
-        )
-    }
-}
 configurations {
     compileOnly {
         extendsFrom(configurations.annotationProcessor.get())
@@ -98,8 +81,4 @@ tasks.jacocoTestReport {
         xml.required.set(true)
         csv.required.set(false)
     }
-}
-
-tasks.sonar {
-    dependsOn(tasks.jacocoTestReport)
 }

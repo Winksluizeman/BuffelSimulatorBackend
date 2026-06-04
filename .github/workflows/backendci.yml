@@ -71,10 +71,19 @@ jobs:
 
       # ─── Stap 4: SonarQube analyse ────────────────────────────────────
       - name: SonarQube analyse
+        uses: SonarSource/sonarqube-scan-action@v5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: ./gradlew sonar --no-daemon
+        with:
+          args: >
+            -Dsonar.projectKey=Winksluizeman_BuffelSimulatorBackend
+            -Dsonar.organization=winksluizeman
+            -Dsonar.java.binaries=build/classes/java/main
+            -Dsonar.sources=src/main/java
+            -Dsonar.tests=src/test/java
+            -Dsonar.exclusions=**/codegen/**,**/generated/**
+            -Dsonar.coverage.jacoco.xmlReportPaths=build/reports/jacoco/test/jacocoTestReport.xml
 
       # ─── Stap 5: JAR bouwen ───────────────────────────────────────────
       - name: Build application JAR
