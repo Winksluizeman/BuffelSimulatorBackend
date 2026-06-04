@@ -21,6 +21,7 @@ java {
 sonar {
     properties {
         property("sonar.projectKey", "Winksluizeman_BuffelSimulatorBackend")
+        property("sonar.organization", "Winksluizeman")
         property("sonar.projectName", "BuffelSimulatorBackend")
         property("sonar.host.url", System.getenv("SONAR_HOST_URL") ?: "https://sonarcloud.io")
         property("sonar.token", System.getenv("SONAR_TOKEN") ?: "")
@@ -34,7 +35,6 @@ sonar {
         )
     }
 }
-
 configurations {
     compileOnly {
         extendsFrom(configurations.annotationProcessor.get())
