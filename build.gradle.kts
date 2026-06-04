@@ -8,9 +8,7 @@ plugins {
     java
     id("org.springframework.boot") version "3.4.5"
     id("io.spring.dependency-management") version "1.1.7"
-    id("com.netflix.dgs.codegen") version "8.3.0"
-    id("org.graalvm.buildtools.native") version "0.11.4"
-    id("org.sonarqube") version "4.4.1.3373"
+    id("org.sonarqube") version "6.0.1.5171"
     id("jacoco")
 }
 
@@ -24,13 +22,16 @@ sonar {
     properties {
         property("sonar.projectKey", "my-backend")
         property("sonar.projectName", "Backend Spring Boot")
-        property("sonar.host.url", "http://localhost:9000")
+        property("sonar.host.url", System.getenv("SONAR_HOST_URL") ?: "http://localhost:9000")
         property("sonar.token", System.getenv("SONAR_TOKEN") ?: "")
         property("sonar.sources", "src/main/java")
         property("sonar.tests", "src/test/java")
-        property("sonar.exclusions", "**/config/**,**/infrastructure/config/**,**/*MapperImpl.java,**/generated/**")
-        property("sonar.coverage.jacoco.xmlReportPaths",
-            layout.buildDirectory.file("reports/jacoco/test/jacocoTestReport.xml").get().asFile.path)
+        property("sonar.java.binaries", "build/classes/java/main")
+        property("sonar.exclusions", "**/codegen/**,**/generated/**")
+        property(
+            "sonar.coverage.jacoco.xmlReportPaths",
+            layout.buildDirectory.file("reports/jacoco/test/jacocoTestReport.xml").get().asFile.path
+        )
     }
 }
 
@@ -82,12 +83,6 @@ dependencyManagement {
     }
 }
 
-tasks.generateJava {
-    schemaPaths.add("${projectDir}/src/main/resources/graphql-client")
-    packageName = "org.example.buffelsimulatorbackend.codegen"
-    generateClient = true
-}
-
 tasks.withType<Test> {
     useJUnitPlatform()
 }
@@ -100,11 +95,11 @@ tasks.jacocoTestReport {
     dependsOn(tasks.test)
     reports {
         html.required.set(true)
-        xml.required.set(true)   // moet true zijn voor SonarQube
+        xml.required.set(true)
         csv.required.set(false)
     }
 }
 
-tasks.named("sonarqube") {
+tasks.sonar {
     dependsOn(tasks.jacocoTestReport)
 }
