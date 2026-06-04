@@ -8,6 +8,8 @@ services:
     depends_on:
       backend:
         condition: service_healthy
+    networks:
+      - app-network
 
   backend:
     build: "C:/School/Semester 4/Opdrachten/Persoonlijke opdracht/BuffelSimulatorBackend"
@@ -26,6 +28,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - app-network
 
   db:
     image: postgres:15
@@ -43,6 +47,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - app-network
 
   sonarqube:
     image: sonarqube:community
@@ -74,8 +80,11 @@ services:
       - app-network
 
 volumes:
-  sonar_date:
+  sonar_data:
   sonar_logs:
   sonar_db_data:
-
   pgdata:
+
+networks:
+  app-network:
+    driver: bridge

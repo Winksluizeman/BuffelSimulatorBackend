@@ -88,6 +88,7 @@ class UserRepositoryTest {
                 "$2a$10$hashedpassword123456789012345678901234567890123456789012",
                 LocalDateTime.now()
         );
+
         UserModel user2 = new UserModel(
                 null,
                 "Bob",
