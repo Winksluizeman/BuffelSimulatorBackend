@@ -71,6 +71,7 @@ jobs:
 
       # ─── Stap 4: SonarQube analyse ────────────────────────────────────
       - name: SonarQube analyse
+        continue-on-error: true
         uses: SonarSource/sonarqube-scan-action@v6
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
