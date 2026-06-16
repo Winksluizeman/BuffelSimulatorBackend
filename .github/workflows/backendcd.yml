@@ -1,0 +1,53 @@
+name: Backend CD
+
+on:
+  workflow_run:
+    workflows: ["Backend CI"]
+    branches: [master]
+    types:
+      - completed
+
+jobs:
+  # ─────────────────────────────────────────────────────────────────────
+  # Job 1: Push Docker image naar Docker Hub
+  # Wordt alleen uitgevoerd als de CI succesvol was
+  # ─────────────────────────────────────────────────────────────────────
+  push-to-dockerhub:
+    name: Push Docker Image naar Docker Hub
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    outputs:
+      image-tag: ${{ steps.meta.outputs.version }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Login bij Docker Hub via secrets
+      - name: Login bij Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # Stel metadata in: tags en labels voor de image
+      # Genereert automatisch tags zoals: latest, 1.0.0, sha-abc1234
+      - name: Stel Docker metadata in
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/buffel-simulator-backend
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
+            type=sha,prefix=sha-,format=short
+            type=ref,event=branch
+
+      # Bouw en push de image naar Docker Hub
+      - name: Bouw en push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
