@@ -1,22 +1,19 @@
-# Build stage
 FROM gradle:8.6-jdk21 AS build
 
 WORKDIR /app
 
-# Kopieer alles (gradlew, gradle-wrapper.jar, build.gradle, settings.gradle, src/)
+# Dependencies cachen (deze laag wordt hergebruikt zolang build.gradle niet verandert)
+COPY build.gradle settings.gradle ./
+COPY gradle gradle
+RUN ./gradlew dependencies --no-daemon || true
+
+# Dan pas de rest kopiëren en builden
 COPY . .
+RUN chmod +x gradlew
+RUN ./gradlew build -x test --no-daemon
 
-# Build zonder tests
-RUN ./gradlew build -x test
-
-# Run stage
 FROM eclipse-temurin:21-jre
-
 WORKDIR /app
-
-# Kopieer de JAR uit de Gradle build
 COPY --from=build /app/build/libs/*.jar app.jar
-
 EXPOSE 8080
-
 ENTRYPOINT ["java", "-jar", "app.jar"]
